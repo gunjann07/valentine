@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Special Question for You 💕</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* ========== CSS VARIABLES FOR THEMING ========== */
+        :root {
+            --primary-pink: #ff6b9d;
+            --deep-pink: #c2185b;
+            --light-pink: #ffc9e5;
+            --soft-pink: #ffe5f1;
+            --accent-purple: #d946ef;
+            --text-dark: #9d4a6d;
+            --white: #ffffff;
+            --shadow: rgba(194, 24, 91, 0.3);
+        }
+
+        /* ========== GLOBAL RESET & BASE STYLES ========== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #ffeef8 0%, #ffe5f1 20%, #ffc9e5 40%, #ffb3d9 60%, #ff9ed4 80%, #ff89cf 100%);
+            overflow-x: hidden;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* ========== ANIMATED BACKGROUND PARTICLES ========== */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            font-size: 20px;
+            animation: float 10s infinite ease-in-out;
+            opacity: 0.7;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(100vh) rotate(0deg) scale(1);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.7;
+            }
+            50% {
+                transform: translateY(50vh) rotate(180deg) scale(1.2);
+            }
+            90% {
+                opacity: 0.7;
+            }
+        }
+
+        .sparkle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: white;
+            border-radius: 50%;
+            animation: sparkle 3s infinite;
+        }
+
+        @keyframes sparkle {
+            0%, 100% {
+                opacity: 0;
+                transform: scale(0);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* ========== PROGRESS BAR (LOVE METER) ========== */
+        .progress-container {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 400px;
+            z-index: 100;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .progress-container.active {
+            opacity: 1;
+        }
+
+        .progress-label {
+            text-align: center;
+            color: var(--deep-pink);
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+
+        .progress-bar-bg {
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 20px;
+            height: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-pink), var(--accent-purple));
+            border-radius: 20px;
+            width: 0%;
+            transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 0 15px rgba(255, 107, 157, 0.6);
+        }
+
+        /* ========== MAIN CONTAINER ========== */
+        .container {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: 600px;
+            padding: 20px;
+        }
+
+        /* ========== SCREEN SYSTEM ========== */
+        .screen {
+            display: none;
+            opacity: 0;
+            transform: scale(0.95);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .screen.active {
+            display: block;
+            animation: screenFadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        @keyframes screenFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* ========== CARD STYLES ========== */
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 30px;
+            padding: 50px 40px;
+            text-align: center;
+            box-shadow: 0 20px 60px var(--shadow);
+            border: 3px solid rgba(255, 182, 217, 0.4);
+            position: relative;
+            overflow: visible;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,107,157,0.1) 0%, transparent 70%);
+            animation: cardGlow 6s infinite;
+            z-index: -1;
+        }
+
+        @keyframes cardGlow {
+            0%, 100% {
+                transform: translate(0, 0);
+            }
+            50% {
+                transform: translate(10px, 10px);
+            }
+        }
+
+        /* ========== TYPOGRAPHY ========== */
+        .big-heading {
+            font-family: 'Pacifico', cursive;
+            font-size: 2.8rem;
+            color: var(--deep-pink);
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(194, 24, 91, 0.2);
+            line-height: 1.3;
+        }
+
+        .subtext {
+            font-size: 1.1rem;
+            color: var(--text-dark);
+            margin-bottom: 30px;
+            font-weight: 300;
+            line-height: 1.6;
+        }
+
+        .question-text {
+            font-size: 1.5rem;
+            color: var(--deep-pink);
+            font-weight: 600;
+            margin-bottom: 30px;
+            line-height: 1.4;
+        }
+
+        /* ========== BUTTON STYLES ========== */
+        .btn {
+            background: linear-gradient(135deg, var(--primary-pink), var(--deep-pink));
+            color: white;
+            border: none;
+            padding: 18px 45px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            box-shadow: 0 8px 25px rgba(194, 24, 91, 0.4);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 12px 35px rgba(194, 24, 91, 0.5);
+        }
+
+        .btn:active {
+            transform: translateY(-1px) scale(1.02);
+        }
+
+        /* ========== OPTIONS CONTAINER ========== */
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .option-btn {
+            background: rgba(255, 255, 255, 0.9);
+            color: var(--deep-pink);
+            border: 2px solid var(--light-pink);
+            padding: 18px 30px;
+            font-size: 1.05rem;
+            font-weight: 500;
+            border-radius: 20px;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s ease;
+            text-align: left;
+        }
+
+        .option-btn:hover {
+            background: linear-gradient(135deg, var(--primary-pink), var(--deep-pink));
+            color: white;
+            border-color: var(--primary-pink);
+            transform: translateX(10px);
+            box-shadow: 0 5px 20px rgba(194, 24, 91, 0.3);
+        }
+
+        /* ========== BIG QUESTION BUTTONS ========== */
+        .big-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 40px;
+            position: relative;
+            min-height: 250px;
+            padding: 20px;
+        }
+
+        .btn-yes {
+            background: linear-gradient(135deg, #4ade80, #22c55e);
+            flex: 1;
+            min-width: 150px;
+            max-width: 200px;
+        }
+
+        .btn-yes:hover {
+            box-shadow: 0 12px 35px rgba(34, 197, 94, 0.5);
+        }
+
+        .btn-no {
+            background: linear-gradient(135deg, var(--light-pink), #fca5a5);
+            color: var(--text-dark);
+            flex: 1;
+            min-width: 150px;
+            max-width: 200px;
+            transition: all 0.2s ease;
+        }
+
+        /* ========== DODGE MESSAGE ========== */
+        .dodge-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 20px 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--deep-pink);
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .dodge-message.show {
+            opacity: 1;
+        }
+
+        /* ========== CELEBRATION SCREEN ========== */
+        .celebration {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #ff6b9d, #d946ef, #ff6b9d);
+            background-size: 200% 200%;
+            animation: celebrationGradient 3s ease infinite;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            overflow: hidden;
+        }
+
+        @keyframes celebrationGradient {
+            0%, 100% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+        }
+
+        .celebration.active {
+            display: flex;
+        }
+
+        .celebration-content {
+            text-align: center;
+            color: white;
+            z-index: 2001;
+            padding: 40px;
+            max-width: 600px;
+        }
+
+        .celebration-content h1 {
+            font-family: 'Pacifico', cursive;
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            animation: bounce 1s ease infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        .celebration-content p {
+            font-size: 1.4rem;
+            margin: 15px 0;
+            font-weight: 300;
+        }
+
+        .summary-box {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 25px;
+            margin-top: 30px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .summary-box p {
+            font-size: 1.1rem;
+            margin: 10px 0;
+        }
+
+        /* ========== CONFETTI PARTICLES ========== */
+        .confetti-particle {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            z-index: 2000;
+            animation: confettiFall 3s linear;
+        }
+
+        @keyframes confettiFall {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        .falling-heart {
+            position: fixed;
+            font-size: 30px;
+            z-index: 2000;
+            animation: heartFall 4s linear;
+            opacity: 0;
+        }
+
+        @keyframes heartFall {
+            0% {
+                top: -10%;
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                top: 110%;
+                opacity: 0;
+            }
+        }
+
+        /* ========== TYPING ANIMATION ========== */
+        .typing-dots {
+            display: inline-flex;
+            gap: 4px;
+            margin-left: 8px;
+        }
+
+        .typing-dots span {
+            width: 8px;
+            height: 8px;
+            background: var(--deep-pink);
+            border-radius: 50%;
+            animation: typingBounce 1.4s infinite;
+        }
+
+        .typing-dots span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-dots span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typingBounce {
+            0%, 60%, 100% {
+                transform: translateY(0);
+            }
+            30% {
+                transform: translateY(-10px);
+            }
+        }
+
+        /* ========== RESPONSIVE DESIGN ========== */
+        @media (max-width: 768px) {
+            .big-heading {
+                font-size: 2.2rem;
+            }
+
+            .card {
+                padding: 40px 25px;
+                border-radius: 25px;
+            }
+
+            .question-text {
+                font-size: 1.3rem;
+            }
+
+            .btn {
+                padding: 15px 35px;
+                font-size: 1rem;
+            }
+
+            .option-btn {
+                padding: 15px 25px;
+                font-size: 1rem;
+            }
+
+            .celebration-content h1 {
+                font-size: 2.5rem;
+            }
+
+            .celebration-content p {
+                font-size: 1.2rem;
+            }
+
+            .big-buttons {
+                flex-direction: column;
+                min-height: 300px;
+            }
+
+            .btn-yes, .btn-no {
+                min-width: 100%;
+                max-width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .big-heading {
+                font-size: 1.8rem;
+            }
+
+            .card {
+                padding: 30px 20px;
+            }
+
+            .celebration-content h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- ========== ANIMATED BACKGROUND ========== -->
+    <div class="particles" id="particles"></div>
+
+    <!-- ========== PROGRESS BAR ========== -->
+    <div class="progress-container" id="progressContainer">
+        <div class="progress-label">Love Meter 💕 <span id="progressPercent">0</span>%</div>
+        <div class="progress-bar-bg">
+            <div class="progress-bar-fill" id="progressFill"></div>
+        </div>
+    </div>
+
+    <!-- ========== DODGE MESSAGE ========== -->
+    <div class="dodge-message" id="dodgeMessage">Nice try 😜</div>
+
+    <!-- ========== MAIN CONTAINER ========== -->
+    <div class="container">
+        <!-- SCREEN 1: WELCOME -->
+        <div class="screen active" id="screen1">
+            <div class="card">
+                <h1 class="big-heading">Hey you 💕</h1>
+                <p class="subtext">I have a few important questions…</p>
+                <p class="subtext">Answer honestly. No pressure. Okay maybe a little 😌</p>
+                <button class="btn" id="startBtn">Let's begin 👉</button>
+            </div>
+        </div>
+
+        <!-- SCREEN 2: QUESTION 1 -->
+        <div class="screen" id="screen2">
+            <div class="card">
+                <p class="question-text">Do you like surprises? 🎁</p>
+                <div class="options">
+                    <button class="option-btn" data-question="1" data-answer="Yes">Yes</button>
+                    <button class="option-btn" data-question="1" data-answer="LOVE THEM">LOVE THEM</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- SCREEN 3: QUESTION 2 -->
+        <div class="screen" id="screen3">
+            <div class="card">
+                <p class="question-text">How do you feel when we spend time together? 💖</p>
+                <div class="options">
+                    <button class="option-btn" data-question="2" data-answer="Happy">Happy</button>
+                    <button class="option-btn" data-question="2" data-answer="Very happy">Very happy</button>
+                    <button class="option-btn" data-question="2" data-answer="Extremely happy">Extremely happy</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- SCREEN 4: QUESTION 3 -->
+        <div class="screen" id="screen4">
+            <div class="card">
+                <p class="question-text">Choose our perfect date vibe 🌹</p>
+                <div class="options">
+                    <button class="option-btn" data-question="3" data-answer="Coffee & long talks + little touching ☕">☕ Coffee & long talks + little touching</button>
+                    <button class="option-btn" data-question="3" data-answer="Movie night + dhamka dar sex 🎬">🎬 Movie night + dhamka dar sex </button>
+                    <button class="option-btn" data-question="3" data-answer="Walk + ice cream + make out 🍦">🍦 Walk + ice cream + make out </button>
+                    <button class="option-btn" data-question="3" data-answer="Candle-light dinner + sex in sarre + coat🍷">🍷 Candle-light dinner + sex in sarre + coat</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- SCREEN 5: QUESTION 4 -->
+        <div class="screen" id="screen5">
+            <div class="card">
+                <p class="question-text">Be honest… do I make you smile? 😊</p>
+                <div class="options">
+                    <button class="option-btn" data-question="4" data-answer="Yes">Yes</button>
+                    <button class="option-btn" data-question="4" data-answer="Always">Always</button>
+                    <button class="option-btn" data-question="4" data-answer="You're annoying but cute">You're annoying but cute 😄</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- SCREEN 6: FAKE SERIOUS -->
+        <div class="screen" id="screen6">
+            <div class="card">
+                <p class="question-text">Okay… now a VERY serious question 😳</p>
+                <div class="typing-dots">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+                <button class="btn" id="readyBtn" style="margin-top: 30px;">I'm ready</button>
+            </div>
+        </div>
+
+        <!-- SCREEN 7: THE BIG QUESTION -->
+        <div class="screen" id="screen7">
+            <div class="card">
+                <h1 class="big-heading" style="font-size: 2.5rem;">Will you go out on a Valentine's date with me? 💘</h1>
+                <div class="big-buttons">
+                    <button class="btn btn-yes" id="yesBtn">💕 YES</button>
+                    <button class="btn btn-no" id="noBtn">😅 No</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== CELEBRATION SCREEN ========== -->
+    <div class="celebration" id="celebration">
+        <div class="celebration-content">
+            <h1>YAYYY!! 💕</h1>
+            <p>Best decision ever!</p>
+            <p style="font-size: 1.2rem; margin-top: 20px;">✨ I can't wait to spend Valentine's Day with you! ✨</p>
+            
+            <div class="summary-box">
+                <p><strong>Our perfect vibe:</strong></p>
+                <p id="dateVibe">Coffee & long talks ☕</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ========== GLOBAL STATE ==========
+        let currentScreen = 1;
+        const answers = {
+            q1: '',
+            q2: '',
+            q3: '',
+            q4: ''
+        };
+        let dodgeCount = 0;
+        const dodgeMessages = [
+            "Nice try 😜",
+            "You can't escape love 💖",
+            "Come on, you know you want to say yes 😏",
+            "Resistance is futile! 💕",
+            "I'll wait forever if I have to 😌"
+        ];
+
+        // ========== WAIT FOR DOM TO LOAD ==========
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded, initializing...');
+            
+            // Initialize background particles
+            createParticles();
+            
+            // Set up all event listeners
+            setupEventListeners();
+        });
+
+        // ========== SETUP EVENT LISTENERS ==========
+        function setupEventListeners() {
+            // Start button
+            const startBtn = document.getElementById('startBtn');
+            if (startBtn) {
+                startBtn.addEventListener('click', startQuiz);
+                console.log('Start button listener added');
+            }
+            
+            // All option buttons (questions 1-4)
+            const optionButtons = document.querySelectorAll('.option-btn');
+            optionButtons.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const question = this.getAttribute('data-question');
+                    const answer = this.getAttribute('data-answer');
+                    handleAnswer(parseInt(question), answer);
+                });
+            });
+            console.log(`Added listeners to ${optionButtons.length} option buttons`);
+            
+            // Ready button (screen 6)
+            const readyBtn = document.getElementById('readyBtn');
+            if (readyBtn) {
+                readyBtn.addEventListener('click', showBigQuestion);
+                console.log('Ready button listener added');
+            }
+            
+            // Yes and No buttons
+            const yesBtn = document.getElementById('yesBtn');
+            const noBtn = document.getElementById('noBtn');
+            
+            if (yesBtn) {
+                yesBtn.addEventListener('click', celebrate);
+                console.log('Yes button listener added');
+            }
+            
+            if (noBtn) {
+                // Dodge on mouse enter
+                noBtn.addEventListener('mouseenter', dodgeButton);
+                
+                // Dodge on click (for touch devices)
+                noBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    dodgeButton();
+                });
+                
+                // Dodge on touch start (for mobile)
+                noBtn.addEventListener('touchstart', function(e) {
+                    e.preventDefault();
+                    dodgeButton();
+                });
+                
+                console.log('No button listeners added');
+            }
+        }
+
+        // ========== BACKGROUND PARTICLES ==========
+        function createParticles() {
+            const particles = document.getElementById('particles');
+            const symbols = ['💕', '💖', '💗', '💓', '💝', '❤️', '💘', '✨', '⭐', '🌟'];
+            
+            for (let i = 0; i < 30; i++) {
+                const particle = document.createElement('div');
+                particle.className = Math.random() > 0.7 ? 'sparkle' : 'particle';
+                
+                if (particle.className === 'particle') {
+                    particle.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+                    particle.style.fontSize = (Math.random() * 15 + 15) + 'px';
+                } else {
+                    const size = Math.random() * 3 + 2;
+                    particle.style.width = size + 'px';
+                    particle.style.height = size + 'px';
+                }
+                
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 10 + 's';
+                particle.style.animationDuration = (Math.random() * 8 + 8) + 's';
+                
+                particles.appendChild(particle);
+            }
+            console.log('Background particles created');
+        }
+
+        // ========== SCREEN NAVIGATION ==========
+        function showScreen(screenNumber) {
+            console.log('Showing screen:', screenNumber);
+            
+            // Hide all screens
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            
+            // Show target screen with delay for smooth transition
+            setTimeout(() => {
+                const targetScreen = document.getElementById('screen' + screenNumber);
+                if (targetScreen) {
+                    targetScreen.classList.add('active');
+                    currentScreen = screenNumber;
+                    updateProgress();
+                }
+            }, 300);
+        }
+
+        // ========== PROGRESS BAR ==========
+        function updateProgress() {
+            const progressContainer = document.getElementById('progressContainer');
+            const progressFill = document.getElementById('progressFill');
+            const progressPercent = document.getElementById('progressPercent');
+            
+            if (currentScreen >= 2 && currentScreen <= 7) {
+                progressContainer.classList.add('active');
+                const percentage = Math.min(((currentScreen - 1) / 6) * 100, 100);
+                progressFill.style.width = percentage + '%';
+                progressPercent.textContent = Math.round(percentage);
+            }
+        }
+
+        // ========== START QUIZ ==========
+        function startQuiz() {
+            console.log('Starting quiz...');
+            showScreen(2);
+        }
+
+        // ========== ANSWER HANDLER ==========
+        function handleAnswer(questionNumber, answerText) {
+            console.log(`Question ${questionNumber} answered:`, answerText);
+            answers['q' + questionNumber] = answerText;
+            
+            // Move to next screen
+            setTimeout(() => {
+                if (questionNumber < 4) {
+                    showScreen(questionNumber + 2);
+                } else {
+                    showScreen(6); // Show "serious question" screen
+                }
+            }, 300);
+        }
+
+        // ========== SHOW BIG QUESTION ==========
+        function showBigQuestion() {
+            console.log('Showing big question...');
+            showScreen(7);
+        }
+
+        // ========== DODGE BUTTON BEHAVIOR ==========
+        function dodgeButton() {
+            console.log('Dodge button triggered!');
+            
+            const noBtn = document.getElementById('noBtn');
+            const dodgeMessage = document.getElementById('dodgeMessage');
+            const buttonsContainer = document.querySelector('.big-buttons');
+            
+            if (!noBtn || !buttonsContainer) {
+                console.error('Button or container not found');
+                return;
+            }
+            
+            // Get container boundaries
+            const containerRect = buttonsContainer.getBoundingClientRect();
+            const btnWidth = noBtn.offsetWidth;
+            const btnHeight = noBtn.offsetHeight;
+            
+            // Calculate safe random position within the container
+            const maxX = containerRect.width - btnWidth - 40;
+            const maxY = containerRect.height - btnHeight - 40;
+            
+            const randomX = Math.max(20, Math.random() * maxX);
+            const randomY = Math.max(20, Math.random() * maxY);
+            
+            console.log('Moving button to:', randomX, randomY);
+            
+            // Apply position
+            noBtn.style.position = 'absolute';
+            noBtn.style.left = randomX + 'px';
+            noBtn.style.top = randomY + 'px';
+            
+            // Random size change
+            const scale = 0.7 + Math.random() * 0.5;
+            noBtn.style.transform = `scale(${scale})`;
+            
+            // Show dodge message
+            if (dodgeMessage) {
+                dodgeMessage.textContent = dodgeMessages[dodgeCount % dodgeMessages.length];
+                dodgeMessage.classList.add('show');
+                
+                setTimeout(() => {
+                    dodgeMessage.classList.remove('show');
+                }, 1500);
+            }
+            
+            dodgeCount++;
+        }
+
+        // ========== CELEBRATION ==========
+        function celebrate() {
+            console.log('Celebration started!');
+            
+            const celebration = document.getElementById('celebration');
+            const dateVibe = document.getElementById('dateVibe');
+            
+            if (!celebration) {
+                console.error('Celebration element not found');
+                return;
+            }
+            
+            // Update summary with selected date vibe
+            if (dateVibe) {
+                dateVibe.textContent = answers.q3 || 'Coffee & long talks ☕';
+            }
+            
+            // Show celebration screen
+            celebration.classList.add('active');
+            
+            // Create confetti
+            createConfetti();
+            
+            // Create falling hearts
+            createFallingHearts();
+        }
+
+        // ========== CONFETTI ANIMATION ==========
+        function createConfetti() {
+            console.log('Creating confetti...');
+            const colors = ['#ff6b9d', '#c2185b', '#ffc9e5', '#ffb3d9', '#d946ef', '#a855f7', '#ec4899'];
+            
+            for (let i = 0; i < 200; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti-particle';
+                confetti.style.left = Math.random() * 100 + '%';
+                confetti.style.top = Math.random() * 100 + '%';
+                confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.width = (Math.random() * 10 + 5) + 'px';
+                confetti.style.height = (Math.random() * 10 + 5) + 'px';
+                confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+                confetti.style.animationDelay = Math.random() * 0.5 + 's';
+                confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                
+                document.body.appendChild(confetti);
+                
+                // Remove after animation
+                setTimeout(() => {
+                    confetti.remove();
+                }, 4000);
+            }
+        }
+
+        // ========== FALLING HEARTS ==========
+        function createFallingHearts() {
+            console.log('Creating falling hearts...');
+            const heartSymbols = ['💕', '💖', '💗', '💓', '💝', '❤️', '💘'];
+            
+            const interval = setInterval(() => {
+                const heart = document.createElement('div');
+                heart.className = 'falling-heart';
+                heart.textContent = heartSymbols[Math.floor(Math.random() * heartSymbols.length)];
+                heart.style.left = Math.random() * 100 + '%';
+                heart.style.fontSize = (Math.random() * 20 + 25) + 'px';
+                heart.style.animationDuration = (Math.random() * 2 + 3) + 's';
+                
+                document.body.appendChild(heart);
+                
+                // Remove after animation
+                setTimeout(() => {
+                    heart.remove();
+                }, 5000);
+            }, 150);
+            
+            // Stop after 10 seconds
+            setTimeout(() => {
+                clearInterval(interval);
+            }, 10000);
+        }
+    </script>
+</body>
+</html>
